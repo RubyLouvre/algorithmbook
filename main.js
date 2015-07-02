@@ -1,8 +1,7 @@
-var utils = require("./utils")
+var lib = require("./lib")
 var promise = require("./promise")
-var lib = {
-    
-}
-utils.mix(lib, utils)
+var history = require("./history")
+
+lib.Promise = promise
 
 window.QAPP  = lib
