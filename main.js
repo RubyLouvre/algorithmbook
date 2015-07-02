@@ -1,5 +1,5 @@
 var utils = require("./utils")
-
+var promise = require("./promise")
 var lib = {
     
 }
