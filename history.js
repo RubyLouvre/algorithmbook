@@ -157,7 +157,7 @@ avalon.history = new History
 
 //劫持页面上所有点击事件，如果事件源来自链接或其内部，
 //并且它不会跳出本页，并且以"#/"或"#!/"开头，那么触发updateLocation方法
-document.addEventListner("click", function (event) {
+document.addEventListener("click", function (event) {
     var defaultPrevented = "defaultPrevented" in event ? event['defaultPrevented'] : event.returnValue === false,
             routeElementJudger = avalon.history.options.routeElementJudger
     if (defaultPrevented || event.ctrlKey || event.metaKey || event.which === 2)
