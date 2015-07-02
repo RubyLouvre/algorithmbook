@@ -217,6 +217,6 @@ function scrollToAnchorId(hash, el) {
 }
 
 if (typeof module === "object") {
-    module.exports = avalon.router
+    module.exports = avalon.history
 }
 
