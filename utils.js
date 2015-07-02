@@ -113,6 +113,7 @@ function isArrayLike(obj) {
 }
 if (typeof module === "object") {
     module.exports = {
+        rword: rword,
         noop: noop,
         mix: mix,
         type: function (obj) { //取得目标的类型

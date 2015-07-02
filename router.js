@@ -163,7 +163,7 @@ Router.prototype = {
         // 在state之内有写history的逻辑
         // if(!avalon.state || options.silent) avalon.History && avalon.History.updateLocation(hash, avalon.mix({}, options, {silent: true}))
         // 移植到QApp时，暂时还未引入mmState. TBD by Zilong.xu @2015-07-02
-        avalon.History && avalon.History.updateLocation(hash, avalon.mix({}, options, {silent: true}))
+        avalon.history && avalon.history.updateLocation(hash, avalon.mix({}, options, {silent: true}))
 
         // 只是写历史而已
         if(!options.silent) {
