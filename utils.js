@@ -114,6 +114,7 @@ function isArrayLike(obj) {
 if (typeof module === "object") {
     module.exports = {
         noop: noop,
+        mix: mix,
         type: function (obj) { //取得目标的类型
             if (obj == null) {
                 return String(obj)
