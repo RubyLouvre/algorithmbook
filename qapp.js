@@ -58,6 +58,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var utils = __webpack_require__(2)
+
 	var lib = {}
 	utils.mix(lib,utils)
 
@@ -136,7 +137,7 @@
 	        if ((options = arguments[i]) != null) {
 	            for (name in options) {
 	                src = target[name]
-
+	                copy = options[name] //当options为VBS对象时报错
 	                // 防止环引用
 	                if (target === copy) {
 	                    continue
@@ -195,6 +196,7 @@
 	                    class2type[serialize.call(obj)] || "object" :
 	                    typeof obj
 	        },
+	        mix: mix,
 	        oneObject: oneObject,
 	        isFunction: isFunction,
 	        isPlainObject: isPlainObject,
@@ -764,7 +766,7 @@
 
 	//劫持页面上所有点击事件，如果事件源来自链接或其内部，
 	//并且它不会跳出本页，并且以"#/"或"#!/"开头，那么触发updateLocation方法
-	document.addEventListner("click", function (event) {
+	document.addEventListener("click", function (event) {
 	    var defaultPrevented = "defaultPrevented" in event ? event['defaultPrevented'] : event.returnValue === false,
 	            routeElementJudger = avalon.history.options.routeElementJudger
 	    if (defaultPrevented || event.ctrlKey || event.metaKey || event.which === 2)
@@ -824,7 +826,7 @@
 	}
 
 	if (true) {
-	    module.exports = avalon.router
+	    module.exports = avalon.history
 	}
 
 

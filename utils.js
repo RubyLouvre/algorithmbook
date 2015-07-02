@@ -64,7 +64,7 @@ var mix = function () {
         if ((options = arguments[i]) != null) {
             for (name in options) {
                 src = target[name]
-
+                copy = options[name] //当options为VBS对象时报错
                 // 防止环引用
                 if (target === copy) {
                     continue
@@ -123,6 +123,7 @@ if (typeof module === "object") {
                     class2type[serialize.call(obj)] || "object" :
                     typeof obj
         },
+        mix: mix,
         oneObject: oneObject,
         isFunction: isFunction,
         isPlainObject: isPlainObject,
