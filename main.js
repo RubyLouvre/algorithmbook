@@ -5,5 +5,6 @@ var router = require("./router")
 
 lib.Promise = promise
 lib.Router = router
+lib.History = history
 
 window.QAPP  = lib

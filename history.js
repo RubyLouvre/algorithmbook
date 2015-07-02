@@ -113,7 +113,7 @@ History.prototype = {
 
     },
     fireRouteChange: function (hash, options) {
-        var router = avalon.router
+        var router = avalon.Router
         if (router && router.navigate) {
             router.setLastPath(hash)
             router.navigate(hash === "/" ? hash : "/" + hash, options)
@@ -159,7 +159,7 @@ avalon.history = new History
 //并且它不会跳出本页，并且以"#/"或"#!/"开头，那么触发updateLocation方法
 document.addEventListener("click", function (event) {
     var defaultPrevented = "defaultPrevented" in event ? event['defaultPrevented'] : event.returnValue === false,
-            routeElementJudger = avalon.history.options.routeElementJudger
+            routeElementJudger = avalon.history.options.routeElementJudger || avalon.noop
     if (defaultPrevented || event.ctrlKey || event.metaKey || event.which === 2)
         return
     var target = event.target
@@ -184,7 +184,7 @@ document.addEventListener("click", function (event) {
         }
         if (hash) {
             event.preventDefault()
-            avalon.router && avalon.router.navigate(hash)
+            avalon.Router && avalon.Router.navigate(hash)
         }
     }
 })
