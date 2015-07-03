@@ -7,6 +7,14 @@ var History = function () {
 }
 
 History.started = false
+
+History.defaults = {
+    basepath: "/",
+    hashPrefix: "!",
+    fireAnchor: true,//决定是否将滚动条定位于与hash同ID的元素上
+    routeElementJudger: avalon.noop // 判断a元素是否是触发router切换的链接
+}
+
 History.prototype = {
     constructor: History,
     getFragment: function (fragment) {
@@ -159,7 +167,7 @@ avalon.history = new History
 //并且它不会跳出本页，并且以"#/"或"#!/"开头，那么触发updateLocation方法
 document.addEventListener("click", function (event) {
     var defaultPrevented = "defaultPrevented" in event ? event['defaultPrevented'] : event.returnValue === false,
-            routeElementJudger = avalon.history.options.routeElementJudger || avalon.noop
+            routeElementJudger = avalon.history.options.routeElementJudger
     if (defaultPrevented || event.ctrlKey || event.metaKey || event.which === 2)
         return
     var target = event.target
