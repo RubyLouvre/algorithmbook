@@ -621,6 +621,14 @@
 	}
 
 	History.started = false
+
+	History.defaults = {
+	    basepath: "/",
+	    hashPrefix: "!",
+	    fireAnchor: true,//决定是否将滚动条定位于与hash同ID的元素上
+	    routeElementJudger: avalon.noop // 判断a元素是否是触发router切换的链接
+	}
+
 	History.prototype = {
 	    constructor: History,
 	    getFragment: function (fragment) {
@@ -642,20 +650,10 @@
 	        return this._getHash(path.slice(path.indexOf("#")))
 	    },
 	    _getHash: function (path) {
-	        if (path.indexOf("#/") === 0) {
-	            return decodeURIComponent(path.slice(2))
-	        }
-	        if (path.indexOf("#!/") === 0) {
-	            return decodeURIComponent(path.slice(3))
+	        if (path.indexOf(this.prefix) === 0) {
+	            return decodeURIComponent(path.slice(this.prefix.length))
 	        }
 	        return ""
-	    },
-	    getPath: function () {
-	        var path = decodeURIComponent(this.location.pathname + this.location.search)
-	        var root = this.basepath.slice(0, -1)
-	        if (!path.indexOf(root))
-	            path = path.slice(root.length)
-	        return path.slice(1)
 	    },
 	    _getAbsolutePath: function (a) {
 	        return  a.href
@@ -665,7 +663,6 @@
 	     * @param options 配置参数
 	     * @param options.hashPrefix hash以什么字符串开头，默认是 "!"，对应实际效果就是"#!"
 	     * @param options.routeElementJudger 判断a元素是否是触发router切换的链接的函数，return true则触发切换，默认为avalon.noop，history内部有一个判定逻辑，是先判定a元素的href属性是否以hashPrefix开头，如果是则当做router切换元素，因此综合判定规则是 href.indexOf(hashPrefix) == 0 || routeElementJudger(ele, ele.href)，如果routeElementJudger返回true则跳转至href，如果返回的是字符串，则跳转至返回的字符串，如果返回false则返回浏览器默认行为
-	     * @param options.html5Mode 是否采用html5模式，即不使用hash来记录历史，默认false
 	     * @param options.fireAnchor 决定是否将滚动条定位于与hash同ID的元素上，默认为true
 	     * @param options.basepath 根目录，默认为"/"
 	     */
@@ -676,11 +673,6 @@
 	        this.options = avalon.mix({}, History.defaults, options)
 	        //IE6不支持maxHeight, IE7支持XMLHttpRequest, IE8支持window.Element，querySelector, 
 	        //IE9支持window.Node, window.HTMLElement, IE10不支持条件注释
-	        //确保html5Mode属性存在,并且是一个布尔
-	        this.html5Mode = !!this.options.html5Mode
-	        //监听模式
-
-	        this.monitorMode = "hashchange"
 
 	        this.prefix = "#" + this.options.hashPrefix + "/"
 	        //确认前后都存在斜线， 如"aaa/ --> /aaa/" , "/aaa --> /aaa/", "aaa --> /aaa/", "/ --> /"
@@ -694,13 +686,11 @@
 
 
 
-	        // 支持popstate 就监听popstate
 	        // 支持hashchange 就监听hashchange
 	        // 否则的话只能每隔一段时间进行检测了
 	        function checkUrl(e) {
-
-	            var pageHash = that.getFragment(), hash
-	            if (pageHash !== that.fragment) {
+	            var pageHash = that.getFragment(), hash, lastHash = avalon.Router.getLastPath()
+	            if (pageHash !== lastHash) {
 	                hash = pageHash
 	            }
 	            if (hash !== void 0) {
@@ -711,9 +701,7 @@
 
 	        //thanks https://github.com/browserstate/history.js/blob/master/scripts/uncompressed/history.html4.js#L272
 
-	        // 支持popstate 就监听popstate
 	        // 支持hashchange 就监听hashchange(IE8,IE9,FF3)
-
 	        this.checkUrl = checkUrl
 	        window.addEventListener("hashchange", checkUrl)
 
@@ -773,7 +761,7 @@
 	//并且它不会跳出本页，并且以"#/"或"#!/"开头，那么触发updateLocation方法
 	document.addEventListener("click", function (event) {
 	    var defaultPrevented = "defaultPrevented" in event ? event['defaultPrevented'] : event.returnValue === false,
-	            routeElementJudger = avalon.history.options.routeElementJudger || avalon.noop
+	            routeElementJudger = avalon.history.options.routeElementJudger
 	    if (defaultPrevented || event.ctrlKey || event.metaKey || event.which === 2)
 	        return
 	    var target = event.target
@@ -791,12 +779,13 @@
 	            return
 	        }
 	        var hash = href.replace(prefix, "").trim()
-	        if (!(href.indexOf(prefix) === 0 && hash !== "")) {
+	        if (href.indexOf(prefix) !== 0) {
 	            hash = routeElementJudger(target, href)
 	            if (hash === true)
 	                hash = href
 	        }
-	        if (hash) {
+	        // href == prefix说明希望返回root
+	        if (hash || href == prefix) {
 	            event.preventDefault()
 	            avalon.Router && avalon.Router.navigate(hash)
 	        }
