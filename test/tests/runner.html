@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="google" value="notranslate">
+        <title>Runner</title>
+        <!--        <meta http-equiv="X-UA-Compatible" content="IE=8" /> -->
+        <link type="text/css" rel="stylesheet" charset="utf-8" href="../src/mocha.css" />
+        <script src="../src/qapp.js"></script>
+        <script src="../src/mocha.js"></script>
+        <script src="../src/expect.js"></script>
+        
+        <script>
+            function requireJS(href, callback){
+                var node = document.createElement("script")
+                node.onload = callback
+                node.onerror = function(){
+                    console.log(href+" 加载失败")
+                }
+                node.src = href
+                document.head.appendChild(node)
+            }
+        </script>
+<!--        <script src="../tests/spec.js"></script>-->
+
+    </head>
+    <body>
+        <div id="mocha"></div>
+        <script>
+            (function() {
+                mocha.ui('bdd')
+                mocha.setup({timeout: 100000});
+                requireJS("../tests/util.js", function(){
+                    mocha.run()
+                })
+               
+                   
+             
+            })()
+        </script>
+      
+    </body>
+</html>
