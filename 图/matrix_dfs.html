@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+
+</head>
+
+<body>
+
+    <div id='root' class="root">
+
+    </div>
+    <script>
+
+        class GraphByMatrix {
+            constructor() {
+                this.matrix = [];     // 顶点数组（里面只能是索引值）
+                this.vertices = [];   // 矩阵
+                this.edges = [];      // 边（里面只能是索引值）
+            }
+            setEdge(a, b, c) {
+                this.edges.push([this.vertices.indexOf(a), this.vertices.indexOf(b), c])
+            }
+            //总共有多少个点，及一个描述边的数组
+            init() {
+                var n = this.vertices.length;
+                var matrix = this.matrix;
+                //建立一个正方形
+                for (var i = 0; i < n; i++) {
+                    matrix[i] = []
+                    for (var j = 0; j < n; j++) {
+                        matrix[i][j] = Infinity
+                    }
+                }
+                for (var i = 0; i < this.edges.length; i++) {
+                    var [a, b, c] = this.edges[i];
+                    matrix[a][b] = c || 1;
+                }
+            }
+            toString() {
+                function addWhiteSpace(str, n, left) {
+                    if (str.length < n) {
+                        if (left) {
+                            return addWhiteSpace(' ' + str, n, false)
+                        } else {
+                            return addWhiteSpace(str + ' ', n, true)
+                        }
+                    }
+                    return str
+                }
+                return this.matrix.map(function (row) {
+                    return row.map(function (el) {
+                        return addWhiteSpace(el + "", 8, true)
+                    }).join('  ')
+                }).join("\n");
+            }
+        }
+        GraphByMatrix.prototype.dfs = function (cb) {
+            var visited = [];
+            for (var i = 0; i < this.matrix.length; i++) {
+                if (visited[i] !== true) {
+                    dfs2(this, i, visited, cb);
+                }
+            }
+        }
+        function dfs2(graph, index, visited = [], cb) {
+            visited[index] = true
+            cb(index)
+            for (var i = 0; i < graph.matrix.length; i++) {
+                if (graph.matrix[index][i] !== Infinity && visited[i] !== true) {
+                    dfs2(graph, i, visited, cb);
+                }
+            }
+        }
+        var g = new GraphByMatrix();
+        g.vertices = [0, 1, 2, 3, 4, 5, 6, 7]
+            ;;[
+                [0, 1],
+                [0, 2],
+                [1, 0],
+                [1, 3],
+                [1, 4],
+                [2, 0],
+                [2, 5],
+                [2, 6],
+                [3, 1],
+                [3, 7],
+                [4, 1],
+                [4, 7],
+                [5, 2],
+                [5, 6],
+                [6, 2],
+                [6, 5],
+                [7, 3],
+                [7, 4]].forEach(function (el) {
+                    g.setEdge(el[0], el[1])
+                });
+        g.init()
+        console.log(g + "")
+        g.dfs(function (el) {
+            console.log("访问:", el)
+        });
+    </script>
+
+</body>
+
+</html>
